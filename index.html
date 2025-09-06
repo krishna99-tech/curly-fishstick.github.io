@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Digital Clock</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6c63ff;
+            --secondary: #ff6584;
+            --dark: #1a1a2e;
+            --darker: #16213e;
+            --light: #f5f7fa;
+            --lighter: #ffffff;
+            --gray: #8a8a8a;
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker), var(--dark));
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+            padding: 20px;
+        }
+        
+        body.light-mode {
+            background: linear-gradient(135deg, var(--lighter), var(--light));
+            color: var(--darker);
+        }
+        
+        .container {
+            text-align: center;
+            padding: 2.5rem;
+            border-radius: 24px;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+        
+        .light-mode .container {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            margin-bottom: 2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .clock-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin: 1.5rem 0;
+        }
+        
+        .clock {
+            font-size: 5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .time-segment {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin: 0 5px;
+            min-width: 100px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+        
+        .light-mode .time-segment {
+            background: rgba(255, 255, 255, 0.6);
+        }
+        
+        .time-segment:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .colon {
+            margin: 0 5px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .date {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .date span {
+            margin: 0 5px;
+            padding: 5px 10px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        
+        .light-mode .date span {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 2rem;
+        }
+        
+        .theme-toggle, .format-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            color: inherit;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .theme-toggle:hover, .format-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            margin-top: 2.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .footer p {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .additional-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 15px;
+            border-radius: 12px;
+            min-width: 140px;
+            transition: var(--transition);
+        }
+        
+        .light-mode .info-box {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-box h3 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+        
+        .info-box p {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .clock {
+                font-size: 4rem;
+            }
+            
+            .time-segment {
+                min-width: 80px;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .date {
+                font-size: 1.3rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .container {
+                padding: 1.8rem;
+            }
+            
+            .clock {
+                font-size: 3rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .time-segment {
+                min-width: 60px;
+                padding: 0.3rem 0.6rem;
+                margin: 5px;
+            }
+            
+            .colon {
+                display: none;
+            }
+            
+            .date {
+                font-size: 1.1rem;
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .theme-toggle, .format-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .footer {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .additional-info {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .clock {
+                font-size: 2.5rem;
+            }
+            
+            .time-segment {
+                min-width: 50px;
+                padding: 0.2rem 0.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .date {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const DigitalClock = () => {
+            const [time, setTime] = useState(new Date());
+            const [isDarkMode, setIsDarkMode] = useState(true);
+            const [is24HourFormat, setIs24HourFormat] = useState(true);
+            
+            useEffect(() => {
+                // Update the clock every second
+                const timer = setInterval(() => {
+                    setTime(new Date());
+                }, 1000);
+                
+                // Clean up the interval on component unmount
+                return () => clearInterval(timer);
+            }, []);
+            
+            // Format time to always show two digits
+            const formatTime = (time) => {
+                return time < 10 ? `0${time}` : time;
+            };
+            
+            // Get the current time
+            let hours = time.getHours();
+            const minutes = formatTime(time.getMinutes());
+            const seconds = formatTime(time.getSeconds());
+            
+            // Determine AM/PM and convert to 12-hour format if needed
+            let amPm = '';
+            if (!is24HourFormat) {
+                amPm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12 || 12;
+            }
+            
+            const formattedHours = formatTime(hours);
+            
+            // Get the current date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const date = time.toLocaleDateString(undefined, options);
+            
+            // Get day of the year
+            const start = new Date(time.getFullYear(), 0, 0);
+            const diff = time - start;
+            const oneDay = 1000 * 60 * 60 * 24;
+            const dayOfYear = Math.floor(diff / oneDay);
+            
+            // Get week number
+            const firstDayOfYear = new Date(time.getFullYear(), 0, 1);
+            const pastDaysOfYear = (time - firstDayOfYear) / 86400000;
+            const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+            
+            // Toggle between dark and light mode
+            const toggleTheme = () => {
+                setIsDarkMode(!isDarkMode);
+                document.body.classList.toggle('light-mode');
+            };
+            
+            // Toggle between 12 and 24 hour format
+            const toggleFormat = () => {
+                setIs24HourFormat(!is24HourFormat);
+            };
+            
+            return (
+                <div className="container">
+                    <h1>Digital Clock</h1>
+                    
+                    <div className="clock-container">
+                        <div className="clock">
+                            <div className="time-segment">{formattedHours}</div>
+                            <div className="colon">:</div>
+                            <div className="time-segment">{minutes}</div>
+                            <div className="colon">:</div>
+                            <div className="time-segment">{seconds}</div>
+                            {!is24HourFormat && <div className="am-pm">{amPm}</div>}
+                        </div>
+                        
+                        <div className="date">
+                            <span><i className="fas fa-calendar-day"></i> {date}</span>
+                        </div>
+                    </div>
+                    
+                    <div className="additional-info">
+                        <div className="info-box">
+                            <h3>DAY OF YEAR</h3>
+                            <p>{dayOfYear}</p>
+                        </div>
+                        <div className="info-box">
+                            <h3>WEEK NUMBER</h3>
+                            <p>{weekNumber}</p>
+                        </div>
+                        <div className="info-box">
+                            <h3>TIME ZONE</h3>
+                            <p>{Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
+                        </div>
+                    </div>
+                    
+                    <div className="controls">
+                        <button className="theme-toggle" onClick={toggleTheme}>
+                            <i className={isDarkMode ? "fas fa-sun" : "fas fa-moon"}></i>
+                            {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                        </button>
+                        <button className="format-toggle" onClick={toggleFormat}>
+                            <i className="fas fa-clock"></i>
+                            {is24HourFormat ? '12-Hour Format' : '24-Hour Format'}
+                        </button>
+                    </div>
+                    
+                    <div className="footer">
+                        <p><i className="fas fa-code"></i> Built with React</p>
+                        <p><i className="fas fa-cloud-upload-alt"></i> Ready for GitHub Pages</p>
+                    </div>
+                </div>
+            );
+        };
+        
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<DigitalClock />);
+    </script>
+</body>
+  </html>
