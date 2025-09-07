@@ -101,6 +101,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: nowrap;
         }
         
         .time-segment {
@@ -108,9 +109,11 @@
             padding: 0.5rem 1rem;
             border-radius: 12px;
             margin: 0 5px;
-            min-width: 100px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             transition: var(--transition);
+            /* Removed min-width for flexibility */
+            flex-grow: 1; /* Allows segments to grow and fill available space */
+            text-align: center; /* Centers the text within the segment */
         }
         
         .light-mode .time-segment {
@@ -228,56 +231,53 @@
             font-weight: 600;
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .clock {
-                font-size: 4rem;
-            }
-            
-            .time-segment {
-                min-width: 80px;
-                padding: 0.4rem 0.8rem;
-            }
-            
-            .date {
-                font-size: 1.3rem;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-        }
+        /* === MOBILE-FIRST RESPONSIVE DESIGN === */
         
+        /* Adjustments for smaller screens first */
         @media (max-width: 576px) {
             .container {
-                padding: 1.8rem;
+                padding: 1rem;
+                width: 95%;
             }
-            
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+
             .clock {
-                font-size: 3rem;
-                flex-wrap: wrap;
-                justify-content: center;
+                font-size: 8vw; /* Scales with viewport width */
+                letter-spacing: 1px;
+                flex-wrap: nowrap; /* Ensures it stays on one line */
+                justify-content: space-between; /* Distributes space evenly */
             }
-            
+
             .time-segment {
-                min-width: 60px;
-                padding: 0.3rem 0.6rem;
-                margin: 5px;
+                padding: 0.4rem 0.6rem;
+                margin: 0 2px;
+                min-width: unset; /* Remove min-width entirely */
             }
-            
+
             .colon {
-                display: none;
+                margin: 0 1px;
             }
             
             .date {
-                font-size: 1.1rem;
+                font-size: 4vw; /* Scales with viewport width */
                 flex-direction: column;
                 gap: 8px;
+                margin-bottom: 1rem;
+            }
+
+            .date span {
+                padding: 4px 8px;
+                margin: 0;
             }
             
             .controls {
                 flex-direction: column;
                 align-items: center;
+                gap: 10px;
             }
             
             .theme-toggle, .format-toggle {
@@ -288,31 +288,40 @@
             .footer {
                 flex-direction: column;
                 text-align: center;
+                gap: 5px;
+                margin-top: 1.5rem;
             }
             
             .additional-info {
                 flex-direction: column;
+                gap: 10px;
+            }
+
+            .info-box {
+                min-width: unset;
+                width: 100%;
             }
         }
         
-        @media (max-width: 400px) {
+        /* Adjustments for medium screens */
+        @media (min-width: 577px) and (max-width: 768px) {
             .clock {
-                font-size: 2.5rem;
-            }
-            
-            .time-segment {
-                min-width: 50px;
-                padding: 0.2rem 0.5rem;
-            }
-            
-            h1 {
-                font-size: 1.5rem;
+                font-size: 4rem;
             }
             
             .date {
-                font-size: 1rem;
+                font-size: 1.3rem;
+            }
+            
+            .time-segment {
+                padding: 0.4rem 0.8rem;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -327,26 +336,21 @@
             const [is24HourFormat, setIs24HourFormat] = useState(true);
             
             useEffect(() => {
-                // Update the clock every second
                 const timer = setInterval(() => {
                     setTime(new Date());
                 }, 1000);
                 
-                // Clean up the interval on component unmount
                 return () => clearInterval(timer);
             }, []);
             
-            // Format time to always show two digits
             const formatTime = (time) => {
                 return time < 10 ? `0${time}` : time;
             };
             
-            // Get the current time
             let hours = time.getHours();
             const minutes = formatTime(time.getMinutes());
             const seconds = formatTime(time.getSeconds());
             
-            // Determine AM/PM and convert to 12-hour format if needed
             let amPm = '';
             if (!is24HourFormat) {
                 amPm = hours >= 12 ? 'PM' : 'AM';
@@ -355,28 +359,23 @@
             
             const formattedHours = formatTime(hours);
             
-            // Get the current date
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const date = time.toLocaleDateString(undefined, options);
             
-            // Get day of the year
             const start = new Date(time.getFullYear(), 0, 0);
             const diff = time - start;
             const oneDay = 1000 * 60 * 60 * 24;
             const dayOfYear = Math.floor(diff / oneDay);
             
-            // Get week number
             const firstDayOfYear = new Date(time.getFullYear(), 0, 1);
             const pastDaysOfYear = (time - firstDayOfYear) / 86400000;
             const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
             
-            // Toggle between dark and light mode
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
                 document.body.classList.toggle('light-mode');
             };
             
-            // Toggle between 12 and 24 hour format
             const toggleFormat = () => {
                 setIs24HourFormat(!is24HourFormat);
             };
@@ -434,9 +433,8 @@
             );
         };
         
-        // Render the app
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<DigitalClock />);
     </script>
 </body>
-  </html>
+</html>
