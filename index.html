@@ -34,8 +34,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: var(--transition);
-            padding: 20px;
+            padding: 10px;
         }
         
         body.light-mode {
@@ -45,13 +44,13 @@
         
         .container {
             text-align: center;
-            padding: 2.5rem;
-            border-radius: 24px;
+            padding: 1.5rem;
+            border-radius: 16px;
             background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-            width: 550px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
             position: relative;
             overflow: hidden;
         }
@@ -69,15 +68,15 @@
         }
         
         .light-mode .container {
-            background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
         
         h1 {
-            margin-bottom: 2rem;
+            font-size: 1.5rem;
             font-weight: 300;
-            letter-spacing: 2px;
-            font-size: 2.2rem;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -85,67 +84,68 @@
         
         .clock-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-            margin: 1.5rem 0;
+            align-items: center;
+            margin: 1rem 0;
         }
         
         .clock {
-            font-size: 5rem;
+            font-size: 2.5rem;
             font-weight: 700;
-            margin: 1rem 0;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
             font-family: 'Courier New', monospace;
-            letter-spacing: 3px;
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             flex-wrap: nowrap;
+            gap: 4px;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
         }
         
         .time-segment {
             background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            margin: 0 5px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 0.4rem 0.6rem;
+            border-radius: 8px;
             transition: var(--transition);
-            /* Removed min-width for flexibility */
-            flex-grow: 1; /* Allows segments to grow and fill available space */
-            text-align: center; /* Centers the text within the segment */
+            flex: 1;
+            text-align: center;
+            max-width: 80px;
         }
         
         .light-mode .time-segment {
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.5);
         }
         
-        .time-segment:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        .time-segment:hover, .time-segment:active {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
         
         .colon {
-            margin: 0 5px;
             color: var(--primary);
             font-weight: 600;
+            margin: 0 2px;
+        }
+        
+        .am-pm {
+            font-size: 1.2rem;
+            margin-left: 8px;
+            align-self: flex-end;
         }
         
         .date {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            margin: 1rem 0;
             opacity: 0.8;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 6px;
         }
         
         .date span {
-            margin: 0 5px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.08);
+            padding: 4px 8px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .light-mode .date span {
@@ -154,174 +154,166 @@
         
         .controls {
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 2rem;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1.5rem;
         }
         
         .theme-toggle, .format-toggle {
             background: rgba(255, 255, 255, 0.1);
             border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
+            padding: 8px 16px;
+            border-radius: 25px;
             color: inherit;
             cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            outline: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            text-align: center;
         }
         
-        .theme-toggle:hover, .format-toggle:hover {
+        .theme-toggle:hover, .format-toggle:hover,
+        .theme-toggle:active, .format-toggle:active {
             background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
+            transform: scale(1.02);
         }
         
         .footer {
-            margin-top: 2.5rem;
-            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            font-size: 0.8rem;
             opacity: 0.7;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            gap: 6px;
         }
         
         .footer p {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         
         .additional-info {
             display: flex;
-            justify-content: space-around;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 1rem;
         }
         
         .info-box {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 15px;
-            border-radius: 12px;
-            min-width: 140px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 8px;
             transition: var(--transition);
+            width: 100%;
         }
         
         .light-mode .info-box {
             background: rgba(255, 255, 255, 0.4);
         }
         
-        .info-box:hover {
-            transform: translateY(-5px);
+        .info-box:hover, .info-box:active {
+            transform: scale(1.02);
         }
         
         .info-box h3 {
-            font-size: 0.9rem;
-            margin-bottom: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
             color: var(--gray);
         }
         
         .info-box p {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 600;
         }
         
-        /* === MOBILE-FIRST RESPONSIVE DESIGN === */
-        
-        /* Adjustments for smaller screens first */
-        @media (max-width: 576px) {
+        /* Medium screens */
+        @media (min-width: 577px) {
             .container {
-                padding: 1rem;
-                width: 95%;
+                padding: 2rem;
+                max-width: 600px;
             }
-
+            
             h1 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
+                font-size: 2rem;
             }
-
+            
             .clock {
-                font-size: 8vw; /* Scales with viewport width */
-                letter-spacing: 1px;
-                flex-wrap: nowrap; /* Ensures it stays on one line */
-                justify-content: space-between; /* Distributes space evenly */
+                font-size: 3.5rem;
+                gap: 6px;
             }
-
+            
             .time-segment {
-                padding: 0.4rem 0.6rem;
-                margin: 0 2px;
-                min-width: unset; /* Remove min-width entirely */
-            }
-
-            .colon {
-                margin: 0 1px;
+                padding: 0.5rem 0.8rem;
+                max-width: 100px;
             }
             
             .date {
-                font-size: 4vw; /* Scales with viewport width */
-                flex-direction: column;
+                font-size: 1.2rem;
+                flex-direction: row;
                 gap: 8px;
-                margin-bottom: 1rem;
-            }
-
-            .date span {
-                padding: 4px 8px;
-                margin: 0;
             }
             
             .controls {
-                flex-direction: column;
-                align-items: center;
-                gap: 10px;
+                flex-direction: row;
+                justify-content: center;
+                gap: 12px;
             }
             
             .theme-toggle, .format-toggle {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .footer {
-                flex-direction: column;
-                text-align: center;
-                gap: 5px;
-                margin-top: 1.5rem;
+                width: auto;
+                padding: 10px 20px;
             }
             
             .additional-info {
-                flex-direction: column;
-                gap: 10px;
+                flex-direction: row;
+                justify-content: space-around;
+                gap: 12px;
+                flex-wrap: wrap;
             }
-
+            
             .info-box {
-                min-width: unset;
-                width: 100%;
+                min-width: 120px;
+                flex: 1 1 30%;
+            }
+            
+            .footer {
+                flex-direction: row;
+                justify-content: space-between;
             }
         }
         
-        /* Adjustments for medium screens */
-        @media (min-width: 577px) and (max-width: 768px) {
-            .clock {
-                font-size: 4rem;
+        /* Large screens */
+        @media (min-width: 769px) {
+            .container {
+                max-width: 700px;
             }
             
-            .date {
-                font-size: 1.3rem;
+            .clock {
+                font-size: 4.5rem;
             }
             
             .time-segment {
-                padding: 0.4rem 0.8rem;
+                max-width: 120px;
             }
             
             h1 {
-                font-size: 1.8rem;
+                font-size: 2.2rem;
+            }
+            
+            .date {
+                font-size: 1.4rem;
+            }
+            
+            .additional-info {
+                justify-content: space-between;
             }
         }
-        
     </style>
 </head>
 <body>
@@ -371,6 +363,12 @@
             const pastDaysOfYear = (time - firstDayOfYear) / 86400000;
             const weekNumber = Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
             
+            // Unix Timestamp
+            const unixTimestamp = Math.floor(time.getTime() / 1000);
+            
+            // Seconds since midnight
+            const secondsSinceMidnight = (time.getHours() * 3600) + (time.getMinutes() * 60) + time.getSeconds();
+            
             const toggleTheme = () => {
                 setIsDarkMode(!isDarkMode);
                 document.body.classList.toggle('light-mode');
@@ -411,6 +409,14 @@
                         <div className="info-box">
                             <h3>TIME ZONE</h3>
                             <p>{Intl.DateTimeFormat().resolvedOptions().timeZone}</p>
+                        </div>
+                        <div className="info-box">
+                            <h3>UNIX TIMESTAMP</h3>
+                            <p>{unixTimestamp.toLocaleString()}</p>
+                        </div>
+                        <div className="info-box">
+                            <h3>SECONDS SINCE MIDNIGHT</h3>
+                            <p>{secondsSinceMidnight}</p>
                         </div>
                     </div>
                     
